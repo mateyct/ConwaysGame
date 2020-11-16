@@ -33,17 +33,10 @@ public class GameOfLife extends JPanel
 	 */
 	private final int DELAY = 100; //milliseconds
 
-	/**
-	 * The anchor coordinate for drawing / animating. All of your vehicle's
-	 * coordinates should be relative to this offset value.
-	 */
-	private int xOffset = -30;
-	private int useXOffset = 0;
 	static boolean[][] grid;
 	/**
 	 * The number of pixels added to xOffset each time paintComponent() is called.
 	 */
-	private int stepSize = 10;
 
 	private final Color BACKGROUND_COLOR = new Color(100, 100, 100);
 
@@ -163,14 +156,18 @@ public class GameOfLife extends JPanel
 		grid = new boolean[50][50];
 		for (int i = 0; i < grid.length; i++) {
 			for (int j = 0; j < grid[i].length; j++) {
-				grid[i][j] = false;
+				// show 5, 6, 10, and 20
+				if(i % 5 == 0)
+					grid[i][j] = true;
+				else
+					grid[i][j] = false;
 			}
 		}
-		grid[1][3] = true;
+		/*grid[1][3] = true;
 		grid[2][1] = true;
 		grid[2][3] = true;
 		grid[3][2] = true;
-		grid[3][3] = true;
+		grid[3][3] = true;*/
 		// DO NOT MODIFY THIS CODE.
 		JFrame frame = new JFrame ("Game of Life");
 		frame.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
