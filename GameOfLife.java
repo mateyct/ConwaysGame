@@ -9,6 +9,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 import java.awt.Font;
+import java.util.Random;
 
 /**
  * CS 121 Project 1: Traffic Animation
@@ -30,7 +31,7 @@ public class GameOfLife extends JPanel
 	 * Note: 100ms is 10 frames per second - you should not need
 	 * a faster refresh rate than this
 	 */
-	private final int DELAY = 10; //milliseconds
+	private final int DELAY = 100; //milliseconds
 
 	/**
 	 * The anchor coordinate for drawing / animating. All of your vehicle's
@@ -52,33 +53,90 @@ public class GameOfLife extends JPanel
 	 * (non-Javadoc)
 	 * @see java.awt.Container#paint(java.awt.Graphics)
 	 */
+	boolean[][] cloneGrid(boolean[][] old) {
+		boolean[][] newArray = new boolean[old.length][];
+		for (int i = 0; i < old.length; i++) {
+			newArray[i] = old[i].clone();
+		}
+		return newArray;
+	}
 	public void paintComponent(Graphics g)
 	{
-		
 		//account for changes to window size
 		int width = getWidth(); // panel width
 		int height = getHeight(); // panel height
+		// calc cell width
+		int cellWidth = (int)((double)width / grid[0].length);
+		int cellHeight = (int)((double)height / grid.length);
 		g.setColor(Color.white);
 		g.fillRect(0, 0, width, height);
 		g.setColor(Color.black);
+		// paint cells
+		for (int i = 0; i < grid.length; i++) {
+			for (int j = 0; j < grid[i].length; j++) {
+				g.drawRect(j * (cellWidth), i * cellHeight, cellWidth, cellHeight);
+				if(grid[i][j]) {
+					g.fillRect(j * (cellWidth), i * cellHeight, cellWidth, cellHeight);
+				}
+			}
+		}
+		boolean[][] newGrid = cloneGrid(grid);
 		// check spots
 		for (int i = 0; i < grid.length; i++) {
 			for (int j = 0; j < grid[i].length; j++) {
 				int numBy = 0;
-				if(i != 0) {
-					
+				// down
+				if(i != grid.length - 1 && grid[i + 1][j]) {
+					numBy++;
 				}
-				if(j != 0) {
-					
+				// up
+				if(i != 0 && grid[i - 1][j]) {
+					numBy++;
 				}
-				if(i != grid.length) {
-					
+				// left
+				if(j != 0 && grid[i][j - 1]) {
+					numBy++;
 				}
-				if(j != grid[i].length) {
-					
+				// right
+				if(j != grid[i].length - 1 && grid[i][j + 1]) {
+					numBy++;
+				}
+				// down right
+				if(i != grid.length - 1 && j != grid[i].length - 1 && grid[i + 1][j + 1]) {
+					numBy++;
+				}
+				// down left
+				if(i != grid.length - 1 && j != 0 && grid[i + 1][j - 1]) {
+					numBy++;
+				}
+				// up right
+				if(i != 0 && j != grid[i].length - 1 && grid[i - 1][j + 1]) {
+					numBy++;
+				}
+				// up left
+				if(i != 0 && j != 0 && grid[i - 1][j - 1]) {
+					numBy++;
+				}
+				if(newGrid[i][j]) {
+					if(numBy == 2 || numBy == 3) {
+						newGrid[i][j] = true;
+					}
+					if(numBy < 2) {
+						newGrid[i][j] = false;
+					}
+					if (numBy > 3) {
+						newGrid[i][j] = false;
+					}
+				}
+				else if(!newGrid[i][j]) {
+					if(numBy == 3) {
+						newGrid[i][j] = true;
+					}
 				}
 			}
 		}
+		grid = cloneGrid(newGrid);
+		
 		// Put your code above this line. This makes the drawing smoother.
 		Toolkit.getDefaultToolkit().sync();
 	}
@@ -100,6 +158,7 @@ public class GameOfLife extends JPanel
 	 */
 	public static void main (String[] args)
 	{
+		Random rand = new Random();
 		// initialize
 		grid = new boolean[50][50];
 		for (int i = 0; i < grid.length; i++) {
@@ -107,8 +166,13 @@ public class GameOfLife extends JPanel
 				grid[i][j] = false;
 			}
 		}
+		grid[1][3] = true;
+		grid[2][1] = true;
+		grid[2][3] = true;
+		grid[3][2] = true;
+		grid[3][3] = true;
 		// DO NOT MODIFY THIS CODE.
-		JFrame frame = new JFrame ("Traffic Animation");
+		JFrame frame = new JFrame ("Game of Life");
 		frame.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().add(new GameOfLife());
 		frame.pack();
@@ -125,8 +189,8 @@ public class GameOfLife extends JPanel
 	{
 		// Do not initialize larger than 800x600. I won't be able to
 		// grade your project if you do.
-		int initWidth = 600;
-		int initHeight = 400;
+		int initWidth = 500;
+		int initHeight = 500;
 		setPreferredSize(new Dimension(initWidth, initHeight));
 		this.setDoubleBuffered(true);
 
