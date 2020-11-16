@@ -153,11 +153,11 @@ public class GameOfLife extends JPanel
 	{
 		Random rand = new Random();
 		// initialize
-		grid = new boolean[50][50];
+		grid = new boolean[100][100];
 		for (int i = 0; i < grid.length; i++) {
 			for (int j = 0; j < grid[i].length; j++) {
 				// show 5, 6, 10, and 20
-				if(i % 5 == 0)
+				if(i % 20 == 0)
 					grid[i][j] = true;
 				else
 					grid[i][j] = false;
