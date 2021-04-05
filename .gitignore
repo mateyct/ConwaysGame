@@ -12,3 +12,5 @@
 /PlaceType.class
 /LifeGamePanel$SelectPlacementType.class
 /LifeGamePanel$ResetListener.class
+GameOfLife.jar
+MANIFEST.MF
